@@ -2,9 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://xingyudev.site/2022/12/22/%E7%BC%96%E8%AF%91%E6%97%B6%E5%BE%AA%E7%8E%AF/</loc>
+    
+    <lastmod>2022-12-22</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://xingyudev.site/2022/12/13/Parallel-Algorithms-in-STL/</loc>
     
-    <lastmod>2022-12-13</lastmod>
+    <lastmod>2022-12-18</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
@@ -67,7 +76,7 @@
 
   <url>
     <loc>https://xingyudev.site/</loc>
-    <lastmod>2022-12-13</lastmod>
+    <lastmod>2022-12-22</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -75,14 +84,14 @@
   
   <url>
     <loc>https://xingyudev.site/tags/C/</loc>
-    <lastmod>2022-12-13</lastmod>
+    <lastmod>2022-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/%E6%9D%82%E8%B0%88/</loc>
-    <lastmod>2022-12-13</lastmod>
+    <lastmod>2022-12-22</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
