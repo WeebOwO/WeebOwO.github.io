@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>大世界渲染基础</title>
+      <link href="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/"/>
+      <url>/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/</url>
+      
+        <content type="html"><![CDATA[<h1 id="地形，大气，以及云的渲染系统"><a href="#地形，大气，以及云的渲染系统" class="headerlink" title="地形，大气，以及云的渲染系统"></a>地形，大气，以及云的渲染系统</h1><h2 id="地形渲染方案"><a href="#地形渲染方案" class="headerlink" title="地形渲染方案"></a>地形渲染方案</h2><h3 id="地形管理"><a href="#地形管理" class="headerlink" title="地形管理"></a>地形管理</h3><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled.png" alt="Untitled"></p><p>根据视距来进行地形的Tessellation，远处的三角形网格密度低而近处高。</p><p>而至于具体的Subdivision方法，可以分为如下</p><ul><li>Triangle Based Subdivision</li><li>QuadTree-Based Subdivision</li></ul><p>这里关键的一点是要明白T-Junction是什么，该怎么解决。</p><h3 id="材质采样"><a href="#材质采样" class="headerlink" title="材质采样"></a>材质采样</h3><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%202.png" alt="Untitled"></p><p>这里要注意TextureArray和3D Texture的区别，不过TextureArray的cache miss率较高，有点费。</p><h3 id="Virtual-Texture"><a href="#Virtual-Texture" class="headerlink" title="Virtual Texture"></a>Virtual Texture</h3><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%203.png" alt="Untitled"></p><p>当前一统天下的方案，大部分现代地形的管理都是通过Virtual Texture来进行。</p><h2 id="私货"><a href="#私货" class="headerlink" title="私货"></a>私货</h2><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%204.png" alt="Untitled"></p><h2 id="天空以及大气渲染"><a href="#天空以及大气渲染" class="headerlink" title="天空以及大气渲染"></a>天空以及大气渲染</h2><p>在做这方面的渲染时，一定要注意到<strong>天空</strong>和<strong>云</strong>要分开来考虑<strong>。</strong></p><ul><li>光与介质的交互方式</li></ul><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%205.png" alt="Untitled"></p><ul><li>Volume Rendering Equation</li></ul><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%206.png" alt="Untitled"></p><ul><li>Scattering Type</li></ul><p><strong>Rayleigh Scattering</strong> : 当参与散射的粒子直径远小于光的波长的时候，波长越短的光自然反射的越厉害，即反射的大部分是蓝光以及紫光。</p><p>$\lambda: 波长，h:海拔高度$</p><p>参数：</p><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%207.png" alt="Untitled"></p><p><strong>Mie Scattering : 参与散射的粒子直径大于或者接近于光的波长时候会发生的散射现象，这种散射发生时似乎是会对任意波长的光都产生同样的散射效果。</strong></p><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%208.png" alt="Untitled"></p><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%209.png" alt="Untitled"></p><h3 id="当前业界主流方法"><a href="#当前业界主流方法" class="headerlink" title="当前业界主流方法"></a>当前业界主流方法</h3><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%2010.png" alt="Untitled"></p><h2 id="云"><a href="#云" class="headerlink" title="云"></a>云</h2><p><img src="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/Untitled%2011.png" alt="Untitled"></p><p>除了这种基于物理的算法，往往还有基于2D面片的做法。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Computer Graphics </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> BigWorld Rendering </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>后处理调研</title>
       <link href="/2023/06/30/%E5%90%8E%E5%A4%84%E7%90%86%E8%B0%83%E7%A0%94/"/>
       <url>/2023/06/30/%E5%90%8E%E5%A4%84%E7%90%86%E8%B0%83%E7%A0%94/</url>

@@ -1,3 +1,4 @@
+https://xingyudev.site/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/
 https://xingyudev.site/categories/index.html
 https://xingyudev.site/tags/index.html
 https://xingyudev.site/2022/11/26/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%BD%92Hexo/
@@ -42,6 +43,7 @@ https://xingyudev.site/tags/Acceleration-Structure/
 https://xingyudev.site/tags/Optimization/
 https://xingyudev.site/tags/Mutithread/
 https://xingyudev.site/tags/Mass-Spring-System/
+https://xingyudev.site/tags/BigWorld-Rendering/
 https://xingyudev.site/categories/Programming-Languages/
 https://xingyudev.site/categories/Algorithm/
 https://xingyudev.site/categories/CppCon/
