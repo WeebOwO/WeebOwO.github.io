@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://xingyudev.site/2023/08/06/Vulkan-MultiTHead-Tips/</loc>
+    
+    <lastmod>2023-08-06</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://xingyudev.site/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/</loc>
     
     <lastmod>2023-07-25</lastmod>
@@ -256,7 +265,7 @@
 
   <url>
     <loc>https://xingyudev.site/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -264,119 +273,126 @@
   
   <url>
     <loc>https://xingyudev.site/tags/C/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Simple-Trick/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Memory-Model/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Unreal/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Misc/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Normal-Mapping/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Vulkan/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Debug/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Raytracing/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Math/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Physics/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/PostProcessing/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Acceleration-Structure/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Optimization/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Mutithread/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/Mass-Spring-System/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/tags/BigWorld-Rendering/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://xingyudev.site/tags/MultiThread/</loc>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
@@ -385,70 +401,77 @@
   
   <url>
     <loc>https://xingyudev.site/categories/Programming-Languages/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/Algorithm/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/CppCon/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/Computer-System/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/Game-Development/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/Others/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/Computer-Graphics/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/GPU/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/Optimization/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
     <loc>https://xingyudev.site/categories/TMP/</loc>
-    <lastmod>2023-07-25</lastmod>
+    <lastmod>2023-08-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://xingyudev.site/categories/Vulkan/</loc>
+    <lastmod>2023-08-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>

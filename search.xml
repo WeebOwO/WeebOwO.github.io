@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Vulkan MultiThread Tips</title>
+      <link href="/2023/08/06/Vulkan-MultiTHead-Tips/"/>
+      <url>/2023/08/06/Vulkan-MultiTHead-Tips/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Vulkan-MultiThread-Tips"><a href="#Vulkan-MultiThread-Tips" class="headerlink" title="Vulkan MultiThread Tips"></a>Vulkan MultiThread Tips</h1><h2 id="Vulkan-RenderPass-整体的执行流程"><a href="#Vulkan-RenderPass-整体的执行流程" class="headerlink" title="Vulkan RenderPass 整体的执行流程"></a>Vulkan RenderPass 整体的执行流程</h2><p><img src="/2023/08/06/Vulkan-MultiTHead-Tips/Untitled.png" alt="Untitled"></p><h2 id="Vulkan多线程压力分析"><a href="#Vulkan多线程压力分析" class="headerlink" title="Vulkan多线程压力分析"></a>Vulkan多线程压力分析</h2><p>When one of the render passes in the application contains a lot of draw calls, such as the gbuffer pass, for CPU submission efficiency it’s important to split the draw calls into multiple groups and record them on multiple threads. There are two ways to do this:</p><ul><li>Record primary command buffers that render chunks of draw calls into the same framebuffer, using <code>vkCmdBeginRenderPass</code> and <code>vkCmdEndRenderPass</code>; execute the resulting command buffers using <code>vkQueueSubmit</code> (batching submits for efficiency)</li><li>Record secondary command buffers that render chunks of draw calls, passing the render pass to <code>vkBeginCommandBuffer</code> along with <code>VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT</code>; use <code>vkCmdBeginRenderPass</code> with <code>VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS</code> in the primary command buffer, followed by <code>vkCmdExecuteCommands</code> to execute all recorded secondary command buffers</li></ul><p>While on immediate mode GPUs the first approach can be viable, and it can be a bit easier to manage wrt synchronization points on the CPU, it’s vital to use the second approach on GPUs that use tiled rendering instead. Using the first approach on tilers would require that the contents of the tiles is flushed to memory and loaded back from memory between each command buffer, which is catastrophic for performance.</p><p>上述分析主要讲述了一个RenderPass中DrawCall压力过高时，应该如何进行优化。在移动端上不利用多条Primary Command Buffer的原因是Primary Command Buffer的提交会把Tile中的数据写回到主存中，这肯定是dame的。</p><h2 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h2><p><a href="https://zeux.io/2020/02/27/writing-an-efficient-vulkan-renderer/#:~:text=Writing%20an%20efficient%20Vulkan%20renderer%201%20Abstract%20Vulkan,on%20different%20hardware.%20...%203%20Descriptor%20sets%20">Writing an efficient Vulkan renderer</a></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Vulkan </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Vulkan </tag>
+            
+            <tag> MultiThread </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>大世界渲染基础</title>
       <link href="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/"/>
       <url>/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/</url>
