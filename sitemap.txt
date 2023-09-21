@@ -1,3 +1,4 @@
+https://xingyudev.site/2023/09/21/Rendering-God-of-War-Ragnarok/
 https://xingyudev.site/2023/08/06/Vulkan-MultiTHead-Tips/
 https://xingyudev.site/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/
 https://xingyudev.site/categories/index.html
@@ -46,6 +47,8 @@ https://xingyudev.site/tags/Mutithread/
 https://xingyudev.site/tags/Mass-Spring-System/
 https://xingyudev.site/tags/BigWorld-Rendering/
 https://xingyudev.site/tags/MultiThread/
+https://xingyudev.site/tags/Rendering/
+https://xingyudev.site/tags/GDC/
 https://xingyudev.site/categories/Programming-Languages/
 https://xingyudev.site/categories/Algorithm/
 https://xingyudev.site/categories/CppCon/
