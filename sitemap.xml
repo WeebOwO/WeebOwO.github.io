@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://xingyudev.site/about/index.html</loc>
+    
+    <lastmod>2025-06-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://xingyudev.site/2023/01/26/%E8%BF%94%E5%9B%9E%E5%80%BC%E4%BC%98%E5%8C%96-RVO-NRVO/</loc>
     
     <lastmod>2024-10-19</lastmod>
@@ -12,15 +21,6 @@
   
   <url>
     <loc>https://xingyudev.site/2022/11/26/%E9%87%8D%E6%96%B0%E5%9B%9E%E5%BD%92Hexo/</loc>
-    
-    <lastmod>2024-10-19</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://xingyudev.site/about/index.html</loc>
     
     <lastmod>2024-10-19</lastmod>
     
