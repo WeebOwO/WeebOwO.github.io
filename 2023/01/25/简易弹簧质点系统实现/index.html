@@ -1,0 +1,220 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>简易弹簧质点系统实现 | WeebOwO</title><meta name="author" content="WeebOwO"><meta name="copyright" content="WeebOwO"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="弹簧质点系统(Mass-Spring System)弹簧质点系统算是最简单的一种物理模型，它假设所有物体除了质点，便是连接质点的弹簧。在这种情况下，我们需要分析的力非常简单，基本上只用考虑重力以及弹簧力即可。公式则如下图所示。 代码地址: https:&#x2F;&#x2F;github.com&#x2F;WeebOwO&#x2F;MassSpringSystem         具体实现整体的结构如下面的伪代码所示，我们在主循环里面首">
+<meta property="og:type" content="article">
+<meta property="og:title" content="简易弹簧质点系统实现">
+<meta property="og:url" content="https://xingyudev.site/2023/01/25/%E7%AE%80%E6%98%93%E5%BC%B9%E7%B0%A7%E8%B4%A8%E7%82%B9%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0/index.html">
+<meta property="og:site_name" content="WeebOwO">
+<meta property="og:description" content="弹簧质点系统(Mass-Spring System)弹簧质点系统算是最简单的一种物理模型，它假设所有物体除了质点，便是连接质点的弹簧。在这种情况下，我们需要分析的力非常简单，基本上只用考虑重力以及弹簧力即可。公式则如下图所示。 代码地址: https:&#x2F;&#x2F;github.com&#x2F;WeebOwO&#x2F;MassSpringSystem         具体实现整体的结构如下面的伪代码所示，我们在主循环里面首">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg">
+<meta property="article:published_time" content="2023-01-25T06:46:04.000Z">
+<meta property="article:modified_time" content="2024-10-19T17:38:10.882Z">
+<meta property="article:author" content="WeebOwO">
+<meta property="article:tag" content="Physics">
+<meta property="article:tag" content="Mass-Spring System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/50624245?s=400&u=1d55ff8d5682990ea99d389eed84c471b946f794&v=4"><link rel="canonical" href="https://xingyudev.site/2023/01/25/%E7%AE%80%E6%98%93%E5%BC%B9%E7%B0%A7%E8%B4%A8%E7%82%B9%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '简易弹簧质点系统实现',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-20 01:38:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/50624245?s=400&amp;u=1d55ff8d5682990ea99d389eed84c471b946f794&amp;v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">WeebOwO</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">简易弹簧质点系统实现</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-01-25T06:46:04.000Z" title="Created 2023-01-25 14:46:04">2023-01-25</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-10-19T17:38:10.882Z" title="Updated 2024-10-20 01:38:10">2024-10-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Computer-Graphics/">Computer Graphics</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="简易弹簧质点系统实现"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="弹簧质点系统-Mass-Spring-System"><a href="#弹簧质点系统-Mass-Spring-System" class="headerlink" title="弹簧质点系统(Mass-Spring System)"></a>弹簧质点系统(Mass-Spring System)</h2><p>弹簧质点系统算是最简单的一种物理模型，它假设所有物体除了<strong>质点</strong>，便是连接质点的<strong>弹簧</strong>。在这种情况下，我们需要分析的力非常简单，基本上只用考虑重力以及弹簧力即可。公式则如下图所示。</p>
+<p>代码地址: <a target="_blank" rel="noopener" href="https://github.com/WeebOwO/MassSpringSystem">https://github.com/WeebOwO/MassSpringSystem</a></p>
+<div align="center">
+    <img src="https://s2.loli.net/2023/01/25/ZkyH75IRKopUBTr.png" width="70%" height="70%">
+</div>
+
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>整体的结构如下面的伪代码所示，我们在主循环里面首先处理一下各种事件，然后物理引擎往前步进一段时间，最后提交给渲染器进行渲染。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># main loop</span></span><br><span class="line"><span class="keyword">while</span> <span class="literal">True</span>:</span><br><span class="line">    process_event()</span><br><span class="line">    engine.step()</span><br><span class="line">    render()</span><br></pre></td></tr></table></figure>
+<p>而具体到这个<code>engine.step()</code>函数，我们所做的事情则是计算每个点的受力，并根据受力计算出对应的速度，加速度，以及对应的位移。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># engine.step()</span></span><br><span class="line"><span class="keyword">def</span> <span class="title function_">step</span>():</span><br><span class="line">    calclate_force() <span class="comment"># 计算力</span></span><br><span class="line">    solve() <span class="comment"># 在这里求解各种各样的速度，并根据自定义delta time进行迭代</span></span><br></pre></td></tr></table></figure>
+<p>从更为专业的术语上解释的话，我们其实是在各个离散的时间步长上进行物理量的累加，从而模拟连续世界中的积分。因为在实际物理世界中有加速度的存在，物体每个时间的速度都不相同，我们应该根据速度在时间的积分来得到真正的位移，但是计算机是无法做到所谓的<strong>“连续”</strong>的，所以我们进而采用了在每个细小时间步长上进行累加的做法。而这种模拟方法其实也有各种各样的流派，我们所使用的是较为简单的<strong>欧拉方法</strong>。</p>
+<p>欧拉方法主要有三种流派</p>
+<ol>
+<li><p><strong>显式欧拉方法（explicit Euler method）</strong></p>
+<script type="math/tex; mode=display">
+v(i+1) = v(i) + a(i)\Delta t \\</script><script type="math/tex; mode=display">
+v(i+1) = x(i) + v(i)\Delta t</script></li>
+</ol>
+<ol>
+<li><p><strong>半隐式欧拉方法（semi-implicit Euler method）</strong>：</p>
+<script type="math/tex; mode=display">
+v(i+1) = v(i) + a(i)\Delta t\\</script><script type="math/tex; mode=display">
+x(i+1) = x(i) + v(i+1)\Delta t</script></li>
+</ol>
+<ol>
+<li><p><strong>隐式欧拉方法（implicit Euler method）</strong> ：</p>
+<script type="math/tex; mode=display">
+v(i+1) = v(i) + a(i+1)\Delta t\\</script><script type="math/tex; mode=display">
+x(i+1) = x(i) + v(i+1)\Delta t</script></li>
+</ol>
+<p>我们在这里所使用的是<strong>半隐式欧拉方法（semi-implicit Euler method）</strong>来进行模拟，代码可以描述为如下。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># calclate_force</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(particle_num):</span><br><span class="line">            <span class="variable language_">self</span>.particle_force[i] = ti.Vector([<span class="number">0.0</span>, -gravity]) * <span class="variable language_">self</span>.particle_mass</span><br><span class="line">            <span class="keyword">for</span> j <span class="keyword">in</span> <span class="built_in">range</span>(particle_num):</span><br><span class="line">                <span class="keyword">if</span> <span class="variable language_">self</span>.rest_length[i, j] != <span class="number">0</span>:</span><br><span class="line">                    <span class="comment"># spring force i </span></span><br><span class="line">                    vec_ij = <span class="variable language_">self</span>.particle_pos[i] - <span class="variable language_">self</span>.particle_pos[j]</span><br><span class="line">                    direction = vec_ij.normalized()</span><br><span class="line">                    <span class="variable language_">self</span>.particle_force[i] += -<span class="variable language_">self</span>.young_modulus[<span class="literal">None</span>] * (vec_ij.norm() / <span class="variable language_">self</span>.rest_length[i, j] - <span class="number">1</span>) * direction</span><br></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># sovle</span></span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span>(particle_num):</span><br><span class="line">            <span class="keyword">if</span> <span class="keyword">not</span> <span class="variable language_">self</span>.particle_fixed[i]:</span><br><span class="line">                <span class="variable language_">self</span>.particle_velocity[i] += <span class="variable language_">self</span>.delta_time * <span class="variable language_">self</span>.particle_force[i] / <span class="variable language_">self</span>.particle_mass</span><br><span class="line">                <span class="variable language_">self</span>.particle_velocity[i] *= ti.exp(-<span class="variable language_">self</span>.delta_time)</span><br><span class="line">                <span class="variable language_">self</span>.particle_pos[i] += <span class="variable language_">self</span>.particle_velocity[i] *<span class="variable language_">self</span>.delta_time</span><br><span class="line">            <span class="keyword">else</span>:</span><br><span class="line">                <span class="variable language_">self</span>.particle_velocity[i] = ti.Vector([<span class="number">0.0</span>, <span class="number">0.0</span>])</span><br></pre></td></tr></table></figure>
+<p>在计算力的阶段，我们首先把当前所有的质点的力都假设为只有重力，然后再遍历其他的质点，如果发现两个质点有弹簧，那么我们就计算下当前质点所受到的弹簧力。而求解的话则是按照我们之前所讲的根据力来进行加速度，速度，以及位移的迭代。</p>
+<p>最后的运行的效果如下图所示(可能加载的会有些慢，大概是1m左右的gif图)</p>
+<div align="center">
+    <img src="https://s2.loli.net/2023/01/25/G3aIJVyDoClF278.gif" width="50%" height="50%">
+</div>
+
+
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>弹簧质点系统本身的实现并不困难，但是看起来还是蛮有意思的，并且也能学习到物理引擎大体上是怎么个流程，也算是有点收获吧。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://xingyudev.site">WeebOwO</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://xingyudev.site/2023/01/25/%E7%AE%80%E6%98%93%E5%BC%B9%E7%B0%A7%E8%B4%A8%E7%82%B9%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0/">https://xingyudev.site/2023/01/25/%E7%AE%80%E6%98%93%E5%BC%B9%E7%B0%A7%E8%B4%A8%E7%82%B9%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Physics/">Physics</a><a class="post-meta__tags" href="/tags/Mass-Spring-System/">Mass-Spring System</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="utterances-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/50624245?s=400&amp;u=1d55ff8d5682990ea99d389eed84c471b946f794&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WeebOwO</div><div class="author-info__description">希望有一天成为一个自己佩服的人</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/WeebOwO"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Welcome!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%B9%E7%B0%A7%E8%B4%A8%E7%82%B9%E7%B3%BB%E7%BB%9F-Mass-Spring-System"><span class="toc-number">1.</span> <span class="toc-text">弹簧质点系统(Mass-Spring System)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">具体实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">3.</span> <span class="toc-text">总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/" title="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践">《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践</a><time datetime="2024-01-20T07:06:02.000Z" title="Created 2024-01-20 15:06:02">2024-01-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/21/Rendering-God-of-War-Ragnarok/" title="Rendering God of War Ragnarok">Rendering God of War Ragnarok</a><time datetime="2023-09-21T00:58:56.000Z" title="Created 2023-09-21 08:58:56">2023-09-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/06/Vulkan-MultiTHead-Tips/" title="Vulkan MultiThread Tips">Vulkan MultiThread Tips</a><time datetime="2023-08-06T06:01:10.000Z" title="Created 2023-08-06 14:01:10">2023-08-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/" title="大世界渲染基础">大世界渲染基础</a><time datetime="2023-07-25T14:34:55.000Z" title="Created 2023-07-25 22:34:55">2023-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/30/%E5%90%8E%E5%A4%84%E7%90%86%E8%B0%83%E7%A0%94/" title="后处理调研">后处理调研</a><time datetime="2023-06-30T08:40:15.000Z" title="Created 2023-06-30 16:40:15">2023-06-30</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By WeebOwO</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadUtterances () {
+  let ele = document.createElement('script')
+  ele.setAttribute('id', 'utterances_comment')
+  ele.setAttribute('src', 'https://utteranc.es/client.js')
+  ele.setAttribute('repo', 'WeebOwO/Blog-Comment')
+  ele.setAttribute('issue-term', 'title')
+  let nowTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+  ele.setAttribute('theme', nowTheme)
+  ele.setAttribute('crossorigin', 'anonymous')
+  ele.setAttribute('async', 'true')
+  document.getElementById('utterances-wrap').insertAdjacentElement('afterbegin',ele)
+}
+
+function utterancesTheme () {
+  const iframe = document.querySelector('.utterances-frame')
+  if (iframe) {
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+    const message = {
+      type: 'set-theme',
+      theme: theme
+    };
+    iframe.contentWindow.postMessage(message, 'https://utteranc.es');
+  }
+}
+
+if ('Utterances' === 'Utterances' || !true) {
+  if (true) btf.loadComment(document.getElementById('utterances-wrap'), loadUtterances)
+  else loadUtterances()
+} else {
+  function loadOtherComment () {
+    loadUtterances()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

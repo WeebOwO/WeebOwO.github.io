@@ -1,0 +1,237 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践 | WeebOwO</title><meta name="author" content="WeebOwO"><meta name="copyright" content="WeebOwO"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践前言今年的UOD分享录播在陆续放出，考虑到学习以及归档的必要，开一个简单的小专栏来记录下自己的学习吧。 [UFSH2023]《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践 | 王宏波 库洛游戏_哔哩哔哩_bilibili 首先是鸣潮今年的分享吧，主讲人是王宏波老师，之前我也看过他在Unreal Circle里面对于PureTS的优化分享，讲的也非常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践">
+<meta property="og:url" content="https://xingyudev.site/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="WeebOwO">
+<meta property="og:description" content="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践前言今年的UOD分享录播在陆续放出，考虑到学习以及归档的必要，开一个简单的小专栏来记录下自己的学习吧。 [UFSH2023]《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践 | 王宏波 库洛游戏_哔哩哔哩_bilibili 首先是鸣潮今年的分享吧，主讲人是王宏波老师，之前我也看过他在Unreal Circle里面对于PureTS的优化分享，讲的也非常">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg">
+<meta property="article:published_time" content="2024-01-20T07:06:02.000Z">
+<meta property="article:modified_time" content="2024-10-19T17:38:10.737Z">
+<meta property="article:author" content="WeebOwO">
+<meta property="article:tag" content="Unreal">
+<meta property="article:tag" content="GameEngine">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/50624245?s=400&u=1d55ff8d5682990ea99d389eed84c471b946f794&v=4"><link rel="canonical" href="https://xingyudev.site/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-20 01:38:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/50624245?s=400&amp;u=1d55ff8d5682990ea99d389eed84c471b946f794&amp;v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">WeebOwO</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2024-01-20T07:06:02.000Z" title="Created 2024-01-20 15:06:02">2024-01-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-10-19T17:38:10.737Z" title="Updated 2024-10-20 01:38:10">2024-10-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Game-Development/">Game Development</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践"><a href="#《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践" class="headerlink" title="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践"></a>《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今年的UOD分享录播在陆续放出，考虑到学习以及归档的必要，开一个简单的小专栏来记录下自己的学习吧。</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1BK411v7FY/?spm_id_from=333.788&amp;vd_source=ea6df38502a795b7533aa33b78bf1159">[UFSH2023]《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践 | 王宏波 库洛游戏_哔哩哔哩_bilibili</a></p>
+<p>首先是鸣潮今年的分享吧，主讲人是王宏波老师，之前我也看过他在Unreal Circle里面对于PureTS的优化分享，讲的也非常的好。</p>
+<h2 id="为什么使用Defer-Shading"><a href="#为什么使用Defer-Shading" class="headerlink" title="为什么使用Defer Shading"></a>为什么使用Defer Shading</h2><ul>
+<li>性能考虑 (应该是从Shader变体，光照计算等角度分析之后的结论)</li>
+<li>方便做一些后处理效果 (例如GTAO, SSR)</li>
+<li>统一多平台，毕竟桌面端肯定是延迟管线</li>
+</ul>
+<h2 id="AA做法"><a href="#AA做法" class="headerlink" title="AA做法"></a>AA做法</h2><p>首先王宏波老师说了下根据去年UOD的统计数据，NPR游戏对屏幕空间的边缘像素占比会到4%-5%，而传统PBR游戏一般会在1%~2%，所以AA这方面会成为卡渲质量的一个重要技术点。</p>
+<p>下图是他们所分享的自研TAA流程。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled.png" alt="Untitled"></p>
+<p>这里是额外加了一个Velocity的Pass并且从<strong>TAA</strong>变到的<strong>TAAU</strong>，即多了一个UpSample的过程，这里同时还说了一个我比较感兴趣的点，作者讲到TAA Pass的放置顺序问题，放在Bloom以及Tonemapping之后可能会导致边缘噪声放大。</p>
+<h3 id="Ghost的处理方式"><a href="#Ghost的处理方式" class="headerlink" title="Ghost的处理方式"></a>Ghost的处理方式</h3><p>Ghost的处理方式如下，是一个中规中矩，首先为性能考虑的一个方案。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%201.png" alt="Untitled"></p>
+<p>而角色的Ghost处理方式则较为特殊，其实应该说带动画的都需要一些特殊的处理方式，因为本身他们在屏幕空间的运动并不是完全因为相机移动而造成的。 </p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%202.png" alt="Untitled"></p>
+<p>解决方式的话是单独的为角色开一个VelocityBuffer，然后进行对应的TAA计算，但是这么做又有一个问题，因为勾边的Pass没有对应的反应到Velocity的角色Mask中，所以会导致VelocityBuffer中角色上会有些黑线，但出于性能考虑，最后还是没有做勾边的VelocityBuffer的渲染。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%203.png" alt="Untitled"></p>
+<p>总结下来就是</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%204.png" alt="Untitled"></p>
+<h3 id="动静像素的混合方式"><a href="#动静像素的混合方式" class="headerlink" title="动静像素的混合方式"></a>动静像素的混合方式</h3><p>动静像素混合，物体运动越快，当前帧的的权重就会升高。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%205.png" alt="Untitled"></p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%206.png" alt="Untitled"></p>
+<h3 id="UpSample部分"><a href="#UpSample部分" class="headerlink" title="UpSample部分"></a>UpSample部分</h3><p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%207.png" alt="Untitled"></p>
+<h2 id="3-One-Pass-Defer"><a href="#3-One-Pass-Defer" class="headerlink" title="3. One Pass Defer"></a>3. One Pass Defer</h2><p>管线整体简介如下，也是比较经典的基于OnChip Memory的优化实现，鸣潮也是PBR和NPR结合的实现，角色和植被NPR，其它部分是PBR。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%208.png" alt="Untitled"></p>
+<p>延迟管线的Gbuffer分布</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%209.png" alt="Untitled"></p>
+<p>这里有个坑是用了Depth Fetch之后，Mali的FPK（Early-Z）会失效。导致渲染压力显著上升。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2010.png" alt="Untitled"></p>
+<p>然后又由于Mali的PLS只有128bit，所以最后的管线变成了一条混合管线，Toon Shading走单独的一条前向渲染，这样Gbuffer就可以不存卡渲相关的信息了。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2011.png" alt="Untitled"></p>
+<p>然后最关键的一个优化，也就是卡渲的这条ForwardPass到底要插入到哪个位置比较好，一种考量是打断One Pass Defer，在Transparency后面走这条前向卡渲。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2012.png" alt="Untitled"></p>
+<p>然后显然这样等同于前面的优化工作全部白干，所以最后的方案是大改渲染（原文中说到几乎等同于重写），把这条卡通管线整合到One Pass Defer里面了，可惜宏波老师说因为时间原因，就不细细分享了。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2013.png" alt="Untitled"></p>
+<p>UE4.26以及4.27的RHI小Bug，当触发discard命令没有对GBuffer进行处理，导致Gbuffer还是在被写入。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2014.png" alt="Untitled"></p>
+<p>下图是修改后的代码</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2015.png" alt="Untitled"></p>
+<p>最后是One Pass Defer和Multi Pass的性能对比，读的带宽下降了非常多，写的带宽也略有下降，分析说是移动设备对于RT的压缩很好，所以写入的时候没有那么明显的优势。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2016.png" alt="Untitled"></p>
+<h2 id="树的多端适配"><a href="#树的多端适配" class="headerlink" title="树的多端适配"></a>树的多端适配</h2><p>上来先分享了下总体的适配方案指南</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2017.png" alt="Untitled"></p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2018.png" alt="Untitled"></p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2019.png" alt="Untitled"></p>
+<p>然后Billboard不是会跟着相机动嘛，所以渲染Shadow的时候要注意下，在写入ShadowMask的时候记得让它固定面向光源hh，不然你就会看到树木的阴影会跟着你相机移动和来回抽搐了。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2020.png" alt="Untitled"></p>
+<p>这里宏波老师说到很多人觉得Imposter和Billboard是一个东西，但是实际上Billboard和Imposter没什么关系，Imposter是用一圈相机围绕对应物体，然后离线记录对应的一些材质信息(类似于Mini Gbuffer)，然后在运行时进行重建，而Billboard就是单纯调整面片使其始终对着角色相机。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2021.png" alt="Untitled"></p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2022.png" alt="Untitled"></p>
+<p>Imposter树也是支持Streaming的。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2023.png" alt="Untitled"></p>
+<p>性能分析，4个DrawCall就可以画出一大堆Imposter树木，以及一些其他的优化。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2024.png" alt="Untitled"></p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2025.png" alt="Untitled"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>个人觉得是干货蛮蛮的一场分享，并且这个视频应该也是UOD今年播放量最多的一个视频。我看的时候有4.7w播放量。</p>
+<p><img src="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/Untitled%2026.png" alt="Untitled"></p>
+<p>下一期应该是写下字节S1工作室或者是实习老东家完美的诛仙2的分享（如果我没有🕊的话）</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://xingyudev.site">WeebOwO</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://xingyudev.site/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/">https://xingyudev.site/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Unreal/">Unreal</a><a class="post-meta__tags" href="/tags/GameEngine/">GameEngine</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="utterances-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/50624245?s=400&amp;u=1d55ff8d5682990ea99d389eed84c471b946f794&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WeebOwO</div><div class="author-info__description">希望有一天成为一个自己佩服的人</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/WeebOwO"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Welcome!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5"><span class="toc-number">1.</span> <span class="toc-text">《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8Defer-Shading"><span class="toc-number">1.2.</span> <span class="toc-text">为什么使用Defer Shading</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#AA%E5%81%9A%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text">AA做法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ghost%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">Ghost的处理方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%A8%E9%9D%99%E5%83%8F%E7%B4%A0%E7%9A%84%E6%B7%B7%E5%90%88%E6%96%B9%E5%BC%8F"><span class="toc-number">1.3.2.</span> <span class="toc-text">动静像素的混合方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UpSample%E9%83%A8%E5%88%86"><span class="toc-number">1.3.3.</span> <span class="toc-text">UpSample部分</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-One-Pass-Defer"><span class="toc-number">1.4.</span> <span class="toc-text">3. One Pass Defer</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A0%91%E7%9A%84%E5%A4%9A%E7%AB%AF%E9%80%82%E9%85%8D"><span class="toc-number">1.5.</span> <span class="toc-text">树的多端适配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.6.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/" title="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践">《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践</a><time datetime="2024-01-20T07:06:02.000Z" title="Created 2024-01-20 15:06:02">2024-01-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/21/Rendering-God-of-War-Ragnarok/" title="Rendering God of War Ragnarok">Rendering God of War Ragnarok</a><time datetime="2023-09-21T00:58:56.000Z" title="Created 2023-09-21 08:58:56">2023-09-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/06/Vulkan-MultiTHead-Tips/" title="Vulkan MultiThread Tips">Vulkan MultiThread Tips</a><time datetime="2023-08-06T06:01:10.000Z" title="Created 2023-08-06 14:01:10">2023-08-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/" title="大世界渲染基础">大世界渲染基础</a><time datetime="2023-07-25T14:34:55.000Z" title="Created 2023-07-25 22:34:55">2023-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/30/%E5%90%8E%E5%A4%84%E7%90%86%E8%B0%83%E7%A0%94/" title="后处理调研">后处理调研</a><time datetime="2023-06-30T08:40:15.000Z" title="Created 2023-06-30 16:40:15">2023-06-30</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By WeebOwO</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadUtterances () {
+  let ele = document.createElement('script')
+  ele.setAttribute('id', 'utterances_comment')
+  ele.setAttribute('src', 'https://utteranc.es/client.js')
+  ele.setAttribute('repo', 'WeebOwO/Blog-Comment')
+  ele.setAttribute('issue-term', 'title')
+  let nowTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+  ele.setAttribute('theme', nowTheme)
+  ele.setAttribute('crossorigin', 'anonymous')
+  ele.setAttribute('async', 'true')
+  document.getElementById('utterances-wrap').insertAdjacentElement('afterbegin',ele)
+}
+
+function utterancesTheme () {
+  const iframe = document.querySelector('.utterances-frame')
+  if (iframe) {
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+    const message = {
+      type: 'set-theme',
+      theme: theme
+    };
+    iframe.contentWindow.postMessage(message, 'https://utteranc.es');
+  }
+}
+
+if ('Utterances' === 'Utterances' || !true) {
+  if (true) btf.loadComment(document.getElementById('utterances-wrap'), loadUtterances)
+  else loadUtterances()
+} else {
+  function loadOtherComment () {
+    loadUtterances()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

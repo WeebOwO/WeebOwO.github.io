@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="en" data-theme="dark"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>返回值优化(RVO, NRVO) | WeebOwO</title><meta name="author" content="WeebOwO"><meta name="copyright" content="WeebOwO"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#0d0d0d"><meta name="description" content="返回值优化返回值优化在C++里面主要是通过RVO(Return Value Optimization)以及NVRO(Named Return Value Optimization)来完成。其中NVRO是在C++11中被引入，并且在C++17中作为强制要求。本质上是一种Copy Elision, 用来减少按值返回临时对象时所发生的拷贝。 具体来讲，我们分析下面这个例子 12345std::vecto">
+<meta property="og:type" content="article">
+<meta property="og:title" content="返回值优化(RVO, NRVO)">
+<meta property="og:url" content="https://xingyudev.site/2023/01/26/%E8%BF%94%E5%9B%9E%E5%80%BC%E4%BC%98%E5%8C%96-RVO-NRVO/index.html">
+<meta property="og:site_name" content="WeebOwO">
+<meta property="og:description" content="返回值优化返回值优化在C++里面主要是通过RVO(Return Value Optimization)以及NVRO(Named Return Value Optimization)来完成。其中NVRO是在C++11中被引入，并且在C++17中作为强制要求。本质上是一种Copy Elision, 用来减少按值返回临时对象时所发生的拷贝。 具体来讲，我们分析下面这个例子 12345std::vecto">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg">
+<meta property="article:published_time" content="2023-01-26T00:37:08.000Z">
+<meta property="article:modified_time" content="2024-10-19T17:38:10.883Z">
+<meta property="article:author" content="WeebOwO">
+<meta property="article:tag" content="C++">
+<meta property="article:tag" content="Optimization">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg"><link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/50624245?s=400&u=1d55ff8d5682990ea99d389eed84c471b946f794&v=4"><link rel="canonical" href="https://xingyudev.site/2023/01/26/%E8%BF%94%E5%9B%9E%E5%80%BC%E4%BC%98%E5%8C%96-RVO-NRVO/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"We didn't find any results for the search: ${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: 'Copy successfully',
+    error: 'Copy error',
+    noSupport: 'The browser does not support'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: 'Just',
+    min: 'minutes ago',
+    hour: 'hours ago',
+    day: 'days ago',
+    month: 'months ago'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '返回值优化(RVO, NRVO)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-20 01:38:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/50624245?s=400&amp;u=1d55ff8d5682990ea99d389eed84c471b946f794&amp;v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">WeebOwO</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> Search</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> Archives</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> Tags</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> Categories</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> About</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">返回值优化(RVO, NRVO)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">Created</span><time class="post-meta-date-created" datetime="2023-01-26T00:37:08.000Z" title="Created 2023-01-26 08:37:08">2023-01-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">Updated</span><time class="post-meta-date-updated" datetime="2024-10-19T17:38:10.883Z" title="Updated 2024-10-20 01:38:10">2024-10-20</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Optimization/">Optimization</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="返回值优化(RVO, NRVO)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">Post View:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="返回值优化"><a href="#返回值优化" class="headerlink" title="返回值优化"></a>返回值优化</h2><p>返回值优化在C++里面主要是通过<strong>RVO(Return Value Optimization)</strong>以及<strong>NVRO(Named Return Value Optimization)</strong>来完成。其中<strong>NVRO</strong>是在C++11中被引入，并且在C++17中作为强制要求。本质上是一种Copy Elision, 用来减少按<strong>值</strong>返回临时对象时所发生的拷贝。</p>
+<p>具体来讲，我们分析下面这个例子</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">std::vector&lt;<span class="type">int</span>&gt; <span class="title">func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>&gt; data = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;;</span><br><span class="line">  <span class="keyword">return</span> data;</span><br><span class="line">&#125;</span><br><span class="line">std::vector&lt;<span class="type">int</span>&gt; t = <span class="built_in">func</span>();</span><br></pre></td></tr></table></figure>
+<p>第一眼看上去，99%的人都会觉得这东西性能一定有大问题，毕竟直接返回了一个数组，那不得每次都得拷贝一大堆数据。但是实际上如果我们打开类似于<a target="_blank" rel="noopener" href="https://cppinsights.io/">cpp insight</a>之类的分析工具，我们会看到以下代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">std::vector&lt;<span class="type">int</span>, std::allocator&lt;<span class="type">int</span>&gt; &gt; <span class="built_in">func</span>()</span><br><span class="line">&#123;</span><br><span class="line">  std::vector&lt;<span class="type">int</span>, std::allocator&lt;<span class="type">int</span>&gt; &gt; data = std::vector&lt;<span class="type">int</span>, std::allocator&lt;<span class="type">int</span>&gt; &gt;&#123;std::initializer_list&lt;<span class="type">int</span>&gt;&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>&#125;, std::<span class="built_in">allocator</span>&lt;<span class="type">int</span>&gt;()&#125; <span class="comment">/* NRVO variable */</span>;</span><br><span class="line">  <span class="keyword">return</span> std::vector&lt;<span class="type">int</span>, std::allocator&lt;<span class="type">int</span>&gt; &gt;(<span class="keyword">static_cast</span>&lt;std::vector&lt;<span class="type">int</span>, std::allocator&lt;<span class="type">int</span>&gt;&gt;&amp;&amp;&gt;(data));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以看到编译器并没有像我们所想的那样傻傻的按值返回，而是做了对应的优化，编译器将临时变量作为右值引用来进行返回，从而避免了拷贝。并且cpp insight还给写了注释/<em> NRVO variable </em>/（可能你以为这注释是我写的，但是并不是😋）。</p>
+<p>于是我们自然就想着去了解一下这个返回值优化到底是什么东西，然后当你google过后，你就会发现C++的返回值优化有两种类型，也就是开头所讲的<strong>RVO(Return Value Optimization)</strong>以及<strong>NVRO(Named Return Value Optimization)</strong>。</p>
+<h3 id="RVO"><a href="#RVO" class="headerlink" title="RVO"></a>RVO</h3><p>让我们先了解下RVO吧，这个东西的官方解释如下：</p>
+<blockquote>
+<p>当一个未具名且未绑定到任何引用的临时变量被移动或复制到一个相同的对象时，拷贝和移动构造可以被省略。当这个临时对象在被构造的时候，他会直接被构造在将要拷贝/移动到的对象。当未命名临时对象是函数返回值时，发生的省略拷贝的行为被称为RVO(返回值优化)。</p>
+</blockquote>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># obj is some custom class</span></span><br><span class="line"><span class="function">Obj <span class="title">func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="built_in">Obj</span>(<span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Obj obj = <span class="built_in">func</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>上面这种情况下，如果发生了RVO，我们就可以看到以下的等效代码。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># obj is some custom class</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(Obj&amp; obj)</span> </span>&#123;</span><br><span class="line">  obj.Obj::<span class="built_in">Obj</span>(<span class="number">1</span>);</span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Obj obj; <span class="comment">// 并没有调用构造函数，是来自编译器的魔法</span></span><br><span class="line">  <span class="built_in">func</span>(obj);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>原先的函数变成了一个void函数，然后我们将要赋值的变量通过参数传递进去，这样的话，我们就可以完成拷贝消除，也就是所谓的<strong>copy elision</strong>。</p>
+<h3 id="NVRO"><a href="#NVRO" class="headerlink" title="NVRO"></a>NVRO</h3><p>顾名思义，这个优化主要是针对<strong>具名</strong>，也就是有名字的临时变量所进行的优化。而优化后的结果其实与上面RVO的并无大异。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"># obj is some custom class</span></span><br><span class="line"><span class="function">Obj <span class="title">func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="function">Obj <span class="title">temp</span><span class="params">(<span class="number">1</span>)</span></span>; <span class="comment">// 区别就是有个具名的临时变量</span></span><br><span class="line">  <span class="keyword">return</span> temp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Obj obj = <span class="built_in">func</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>不过在没有NVRO的编译器上面，<strong>上面这段代码如果执行RVO的话，实际上会多一次拷贝构造</strong>，这点要注意, 因为RVO会优化为以下代码:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(Obj &amp;obj_)</span> </span>&#123;</span><br><span class="line">  <span class="function">Obj <span class="title">obj</span><span class="params">(<span class="number">1</span>)</span></span>;</span><br><span class="line">  obj_.Obj::<span class="built_in">Obj</span>(obj); <span class="comment">// 拷贝构造函数</span></span><br><span class="line">  <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="优化失效问题"><a href="#优化失效问题" class="headerlink" title="优化失效问题"></a>优化失效问题</h2><p>虽然返回值优化很棒，不禁让人感叹现代编译器的强大，但是还是存在一些特殊情况会阻碍这种优化的发生。</p>
+<ol>
+<li><p>函数中返回全局变量或者函数参数的情况下，优化不会发生。也就是说只要值不是在函数内创建，优化就不会发生。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Obj obj;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">func</span><span class="params">(Obj obj)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> obj;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol>
+<li><p>运行时依赖，也就是函数里面存在分支，编译器无法判断返回什么对象的情况下，优化也不会发生。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Obj <span class="title">fun</span><span class="params">(<span class="type">bool</span> flag)</span> </span>&#123;</span><br><span class="line">  Obj o1;</span><br><span class="line">  Obj o2;</span><br><span class="line">  <span class="keyword">if</span> (flag) &#123;</span><br><span class="line">    <span class="keyword">return</span> o1;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> o2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Obj obj = <span class="built_in">fun</span>(<span class="literal">true</span>);</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>使用<code>std::move()</code>的情况下，这个应该是重灾区，有很多人认为返回一个临时变量的右值引用就可以解决返回值优化，虽然这种做法看上去非常合理，但是实际上会强制调用移动构造函数，并且编译器优化上其实会隐式的帮你调用<code>std::move()</code>，所以自己是不用这么做的。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Obj <span class="title">fun</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Obj obj;</span><br><span class="line">  <span class="keyword">return</span> std::<span class="built_in">move</span>(obj); <span class="comment">// 不要这么做，会妨碍编译器优化</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  Obj obj = <span class="built_in">fun</span>();</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>返回值优化本身是非常有用的技术，能够大幅减少程序中的无用拷贝，在了解优化发生的时间以及禁忌事项后，我们可以非常高效的利用这个特性。但是另一方面其实把优化全都交给编译器也不太好，嗯，说到底还是自己做优化没准才是出路？</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">Author: </span><span class="post-copyright-info"><a href="https://xingyudev.site">WeebOwO</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">Link: </span><span class="post-copyright-info"><a href="https://xingyudev.site/2023/01/26/%E8%BF%94%E5%9B%9E%E5%80%BC%E4%BC%98%E5%8C%96-RVO-NRVO/">https://xingyudev.site/2023/01/26/%E8%BF%94%E5%9B%9E%E5%80%BC%E4%BC%98%E5%8C%96-RVO-NRVO/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">Copyright Notice: </span><span class="post-copyright-info">All articles in this blog are licensed under <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a> unless stating additionally.</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C/">C++</a><a class="post-meta__tags" href="/tags/Optimization/">Optimization</a></div><div class="post_share"><div class="social-share" data-image="https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> Comment</span></div></div><div class="comment-wrap"><div><div id="utterances-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/50624245?s=400&amp;u=1d55ff8d5682990ea99d389eed84c471b946f794&amp;v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">WeebOwO</div><div class="author-info__description">希望有一天成为一个自己佩服的人</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">Articles</div><div class="length-num">27</div></a><a href="/tags/"><div class="headline">Tags</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">Categories</div><div class="length-num">11</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/WeebOwO"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>Announcement</span></div><div class="announcement_content">Welcome!</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>Catalog</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BF%94%E5%9B%9E%E5%80%BC%E4%BC%98%E5%8C%96"><span class="toc-number">1.</span> <span class="toc-text">返回值优化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RVO"><span class="toc-number">1.1.</span> <span class="toc-text">RVO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#NVRO"><span class="toc-number">1.2.</span> <span class="toc-text">NVRO</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E5%A4%B1%E6%95%88%E9%97%AE%E9%A2%98"><span class="toc-number">2.</span> <span class="toc-text">优化失效问题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">2.1.</span> <span class="toc-text">总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>Recent Post</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/01/20/%E3%80%8A%E9%B8%A3%E6%BD%AE%E3%80%8B%E5%9F%BA%E4%BA%8E%E8%99%9A%E5%B9%BB%E5%BC%95%E6%93%8E4%E7%9A%84%E5%A4%9A%E5%B9%B3%E5%8F%B0%E6%95%88%E6%9E%9C%E5%92%8C%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96%E5%AE%9E%E8%B7%B5/" title="《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践">《鸣潮》基于虚幻引擎4的多平台效果和性能优化实践</a><time datetime="2024-01-20T07:06:02.000Z" title="Created 2024-01-20 15:06:02">2024-01-20</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/09/21/Rendering-God-of-War-Ragnarok/" title="Rendering God of War Ragnarok">Rendering God of War Ragnarok</a><time datetime="2023-09-21T00:58:56.000Z" title="Created 2023-09-21 08:58:56">2023-09-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/08/06/Vulkan-MultiTHead-Tips/" title="Vulkan MultiThread Tips">Vulkan MultiThread Tips</a><time datetime="2023-08-06T06:01:10.000Z" title="Created 2023-08-06 14:01:10">2023-08-06</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/07/25/%E5%A4%A7%E4%B8%96%E7%95%8C%E6%B8%B2%E6%9F%93%E5%9F%BA%E7%A1%80/" title="大世界渲染基础">大世界渲染基础</a><time datetime="2023-07-25T14:34:55.000Z" title="Created 2023-07-25 22:34:55">2023-07-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/06/30/%E5%90%8E%E5%A4%84%E7%90%86%E8%B0%83%E7%A0%94/" title="后处理调研">后处理调研</a><time datetime="2023-06-30T08:40:15.000Z" title="Created 2023-06-30 16:40:15">2023-06-30</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s2.loli.net/2023/04/10/qhzD6TsIalHg3tx.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By WeebOwO</div><div class="framework-info"><span>Framework </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>Theme </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="Read Mode"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="Switch Between Light And Dark Mode"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="Toggle between single-column and double-column"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="Setting"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="Table Of Contents"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="Scroll To Comments"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="Back To Top"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">Search</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  Loading the Database</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="Search for Posts" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>function loadUtterances () {
+  let ele = document.createElement('script')
+  ele.setAttribute('id', 'utterances_comment')
+  ele.setAttribute('src', 'https://utteranc.es/client.js')
+  ele.setAttribute('repo', 'WeebOwO/Blog-Comment')
+  ele.setAttribute('issue-term', 'title')
+  let nowTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+  ele.setAttribute('theme', nowTheme)
+  ele.setAttribute('crossorigin', 'anonymous')
+  ele.setAttribute('async', 'true')
+  document.getElementById('utterances-wrap').insertAdjacentElement('afterbegin',ele)
+}
+
+function utterancesTheme () {
+  const iframe = document.querySelector('.utterances-frame')
+  if (iframe) {
+    const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'photon-dark' : 'github-light'
+    const message = {
+      type: 'set-theme',
+      theme: theme
+    };
+    iframe.contentWindow.postMessage(message, 'https://utteranc.es');
+  }
+}
+
+if ('Utterances' === 'Utterances' || !true) {
+  if (true) btf.loadComment(document.getElementById('utterances-wrap'), loadUtterances)
+  else loadUtterances()
+} else {
+  function loadOtherComment () {
+    loadUtterances()
+  }
+}</script></div><script defer="defer" id="fluttering_ribbon" mobile="true" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/canvas-fluttering-ribbon.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
